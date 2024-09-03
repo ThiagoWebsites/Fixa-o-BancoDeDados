@@ -120,5 +120,6 @@ sum(order_items.quantity)
 From products
 Inner join order_items
 ON order_items.product_id = products.product_id
-group by products.product_name;
+group by products.product_name
+order by order_items.quantity desc;
 
