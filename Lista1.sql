@@ -64,7 +64,7 @@ INSERT INTO Order_Items (order_item_id, order_id, product_id, quantity) VALUES
 (5, 3, 1, 2),
 (6, 4, 4, 1);
 
---  retorne o ID do pedido, a data do pedido, o nome completo do cliente e o email para todos os pedidos.
+--  1. retorne o ID do pedido, a data do pedido, o nome completo do cliente e o email para todos os pedidos.
 SELECT 
 orders.order_id,
 orders.order_date,
@@ -75,7 +75,7 @@ FROM orders
 inner join customers
 ON customers.customer_id = orders.customer_id;
 
--- Escreva uma consulta SQL que retorne o nome do produto e a quantidade pedida para todos os produtos pedidos por um cliente com um customer_id específico (por exemplo, customer_id = 1). Essa consulta deve combinar as tabelas Order_Items, Orders e Products.
+-- 2. Escreva uma consulta SQL que retorne o nome do produto e a quantidade pedida para todos os produtos pedidos por um cliente com um customer_id específico (por exemplo, customer_id = 1). Essa consulta deve combinar as tabelas Order_Items, Orders e Products.
 
 SELECT
 products.product_name,
@@ -87,10 +87,10 @@ INNER JOIN orders
 on order_items.order_id = orders.order_id
 WHERE orders.customer_id = 1;
 
--- Escreva uma consulta SQL que calcule o total gasto por cada cliente. O resultado deve incluir o nome completo do cliente e o total gasto. Essa consulta deve usar JOINs para combinar as tabelas Customers, Orders, Order_Items e Products, e deve usar uma função de agregação para calcular o total.
+-- 3. Escreva uma consulta SQL que calcule o total gasto por cada cliente. O resultado deve incluir o nome completo do cliente e o total gasto. Essa consulta deve usar JOINs para combinar as tabelas Customers, Orders, Order_Items e Products, e deve usar uma função de agregação para calcular o total.
 
 SELECT
-products.price,
+SUM(products.price) as Gasto,
 customers.first_name,
 customers.last_name
 FROM products
@@ -99,14 +99,26 @@ ON products.product_id = order_items.product_id
 inner join orders
 ON order_items.order_id = orders.order_id
 inner join customers
-ON orders.customer_id = customers.customer_id;
+on orders.customer_id = customers.customer_id
+group by customers.customer_id;	
 
--- Escreva uma consulta SQL que retorne os nomes dos clientes que nunca fizeram um pedido. Para isso, use um LEFT JOIN entre as tabelas Customers e Orders e filtre os resultados para encontrar clientes sem pedidos.
+-- 4. Escreva uma consulta SQL que retorne os nomes dos clientes que nunca fizeram um pedido. Para isso, use um LEFT JOIN entre as tabelas Customers e Orders e filtre os resultados para encontrar clientes sem pedidos.
 
 SELECT
 customers.first_name,
 orders.order_date
 FROM customers
 LEFT JOIN orders
-ON customers.customer_id = orders.customer_id;
+ON orders.customer_id = customers.customer_id 
+where orders.order_date is null;
+
+-- 5. Escreva uma consulta SQL que retorne o nome do produto e a quantidade total vendida, ordenando os resultados pelos produtos mais vendidos. Combine as tabelas Order_Items e Products, e utilize uma função de agregação para somar a quantidade vendida de cada produto.
+
+SELECT
+products.product_name,
+sum(order_items.quantity)
+From products
+Inner join order_items
+ON order_items.product_id = products.product_id
+group by products.product_name;
 
